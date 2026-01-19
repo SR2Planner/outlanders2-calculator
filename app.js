@@ -15,6 +15,15 @@
       providedByLevel: {}   // NEW
     };
   }
+
+  function formatCost(cost) {
+    if (!cost) return '0';
+    return Object.entries(cost)
+      .filter(([_, amt]) => amt > 0)
+      .map(([rId, amt]) => `${amt} ${RESOURCES.find(r => r.id === rId)?.name || rId}`)
+      .join(', ') || '0';
+  }
+  
   
   
   function getUsedResources() {
@@ -173,19 +182,23 @@
     const list = document.getElementById('building-list');
     list.innerHTML = '';
     const search = document.getElementById('search-buildings');
+    
     function showBuildings(filter = '') {
       list.innerHTML = '';
-      BUILDINGS.filter(b => !state.plan[b.id] && b.name.toLowerCase().includes(filter.toLowerCase())).forEach(b => {
-        const btn = document.createElement('button');
-        btn.textContent = `${b.name} (${formatCost(b.cost)})`;
-        btn.onclick = () => addBuildingToPlan(b.id);
-        list.appendChild(btn);
-      });
+      BUILDINGS.filter(b => !state.plan[b.id] && b.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(b => {
+          const btn = document.createElement('button');
+          btn.textContent = `${b.name} (${formatCost(b.cost)})`;
+          btn.onclick = () => addBuildingToPlan(b.id);
+          list.appendChild(btn);
+        });
     }
+    
     search.oninput = (e) => showBuildings(e.target.value);
     showBuildings();
     dialog.showModal();
   };
+  
   
   render();
   
