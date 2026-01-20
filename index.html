@@ -1,45 +1,57 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Outlanders 2 Calculator</title>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-X1YTM817JH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Outlanders 2 Calculator</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W3BJL6LT84"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-  gtag('config', 'G-X1YTM817JH');
-</script>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Outlanders 2 Calculator</h1>
-    <div class="controls">
-      <button id="reset-try">Reset to try again</button>
-      <button id="reset-all">Reset everything</button>
-      <button id="add-building">+ Add building</button>
+      gtag("config", "G-W3BJL6LT84");
+    </script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Outlanders 2 Calculator</h1>
+      <div class="controls">
+        <button id="reset-try">Reset to try again</button>
+        <button id="reset-all">Reset everything</button>
+        <button id="add-building">+ Add building</button>
+        <button id="add-resource">+ Add Resource</button>
+      </div>
+      <div id="buildings-container"></div>
+      <dialog id="add-building-dialog">
+        <h3>Add Building</h3>
+        <input id="search-buildings" placeholder="Search buildings..." />
+        <div id="building-list"></div>
+        <button onclick="document.getElementById('add-building-dialog').close()">Cancel</button>
+      </dialog>
+      <dialog id="add-resource-dialog">
+        <h3>Add Resource</h3>
+        <input id="search-resources" placeholder="Search resources..." />
+        <div id="resource-list"></div>
+        <button onclick="document.getElementById('add-resource-dialog').close()">Cancel</button>
+      </dialog>
     </div>
-    <div id="buildings-container"></div>
-    <dialog id="add-building-dialog">
-      <h3>Add Building</h3>
-      <input id="search-buildings" placeholder="Search buildings...">
-      <div id="building-list"></div>
-      <button onclick="document.getElementById('add-building-dialog').close()">Cancel</button>
-    </dialog>
-  </div>
-  <script src="data.js"></script>
-  <script src="app.js"></script>
-  <footer class="disclaimer">
-    <p>
-      This is version 0.1 of a resource calculator for 
-      <a href="https://www.pomelogames.com/outlanders2/" target="_blank">Outlanders 2</a>. 
-      This is a hobby project. I do not own the rights to Outlanders 2. 
-      I just enjoy playing the game and want to make my life a bit easier for the challenges.
-    </p>
-  </footer>
+    <script src="data.js"></script>
+    <script src="state.js"></script>
+    <script src="utils.js"></script>
+    <script src="render.js"></script>
+    <script src="events.js"></script>
 
-</body>
+    <footer class="disclaimer">
+      <p>
+        This is version 0.1 of a resource calculator for
+        <a href="https://www.pomelogames.com/outlanders2/" target="_blank">Outlanders 2</a>. This is
+        a hobby project. I do not own the rights to Outlanders 2. I just enjoy playing the game and
+        want to make my life a bit easier for the challenges.
+      </p>
+    </footer>
+  </body>
 </html>
