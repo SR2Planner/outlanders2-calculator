@@ -75,7 +75,7 @@ function render() {
   // Totals Table
   if (usedRes.length > 0) {
     html +=
-      '<h3>Totals</h3><table class="totals-table"><thead><tr><th>Resource</th><th>Total Needed</th><th>Provided by Level</th><th>You Have</th><th>Built Credit</th><th>Remaining</th></tr></thead><tbody>';
+      '<h3>Totals</h3><table class="totals-table"><thead><tr><th>Resource</th><th>Total Needed</th><th>Provided by Level</th><th>You Have</th><th>Built Credit</th><th>Remaining needed</th></tr></thead><tbody>';
     usedRes.forEach(function (r) {
       let totalNeeded = 0,
         builtCredit = 0;
@@ -94,17 +94,25 @@ function render() {
         if (b?.cost) builtCredit += (b.cost[r.id] || 0) * (state.built[bId] || 0);
       });
 
-      // Challenges (unchanged)
-      Object.keys(state.challenges || {}).forEach(function (chId) {
-        const def = RESOURCES.find(function (rr) {
-          return rr.id === chId;
-        });
-        if (!def || !state.challenges[chId]) return;
-        const ch = state.challenges[chId];
-        const remainingOutput = ch.target - (ch.doneCount || 0);
-        const batchesNeeded = Math.ceil(remainingOutput / (def.yield || 1));
-        totalNeeded += batchesNeeded * (def.cost?.[r.id] || 0);
-      });
+// Challenges
+Object.keys(state.challenges || {}).forEach(function (chId) {
+    const def = RESOURCES.find(function (rr) {
+      return rr.id === chId;
+    });
+    if (!def || !state.challenges[chId]) return;
+    const ch = state.challenges[chId];
+    const doneCount = ch.doneCount || 0;
+    const target = ch.target;
+    
+    // Always add FULL target demand to totalNeeded (fixed requirement)
+    const fullBatchesNeeded = Math.ceil(target / (def.yield || 1));
+    totalNeeded += fullBatchesNeeded * (def.cost?.[r.id] || 0);
+    
+    // Produced batches add to builtCredit
+    const producedBatches = Math.floor(doneCount / (def.yield || 1));
+    builtCredit += producedBatches * (def.cost?.[r.id] || 0);
+  });
+  
 
       const provided = state.providedByLevel?.[r.id] || 0;
       const youHave = state.currentResources?.[r.id] || 0;
