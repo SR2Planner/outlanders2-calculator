@@ -41,33 +41,35 @@ function render() {
     html += "<p>No challenges planned.</p>";
   } else {
     html +=
-      "<table><thead><tr><th>Resource</th><th>Cost per Batch</th><th>Target</th><th>Done</th>";
+    "<table><thead><tr><th>Resource</th><th>Cost per Batch</th><th>Target</th><th>Done Count</th><th>Done Percent</th>";
+  usedRes.forEach(function (r) {
+    html += `<th>${r.name}</th>`;
+  });
+  html += "<th>Remove</th></tr></thead><tbody>";
+  
+  Object.keys(state.challenges || {}).forEach(function (challengeId) {
+    const def = RESOURCES.find(function (r) {
+      return r.id === challengeId;
+    });
+    if (!def) return;
+    const ch = state.challenges[challengeId];
+    const target = ch.target;
+    const doneCount = ch.doneCount || 0;
+    const donePercent = ch.donePercent || 0;
+    const costStr = formatCost(def.cost);
+  
+    html += `<tr class="challenge-row" data-challenge-id="${challengeId}" data-target="${target}"><td>${def.name}</td><td>${costStr}</td><td><input type="number" min="0" value="${target}" onchange="window.updateChallengeTarget('${challengeId}',this.value)"></td><td><input type="number" class="done-count" min="0" max="${target}" value="${doneCount}" onchange="window.updateChallengeDoneCount('${challengeId}',this.value)"></td><td><input type="number" class="done-percent" min="0" max="100" value="${donePercent}" onchange="window.updateChallengeDonePercent('${challengeId}',this.value)">%</td>`;
+  
     usedRes.forEach(function (r) {
-      html += `<th>${r.name}</th>`;
+      const remainingOutput = target - doneCount;  // Use doneCount
+      const batchesNeeded = Math.ceil(remainingOutput / (def.yield || 1));
+      const demand = (def.cost[r.id] || 0) * batchesNeeded;
+      html += `<td class="text-right">${demand}</td>`;
     });
-    html += "<th>Remove</th></tr></thead><tbody>";
-
-    Object.keys(state.challenges || {}).forEach(function (challengeId) {
-      const def = RESOURCES.find(function (r) {
-        return r.id === challengeId;
-      });
-      if (!def) return;
-      const ch = state.challenges[challengeId];
-      const target = ch.target;
-      const done = ch.done;
-      const costStr = formatCost(def.cost);
-
-      html += `<tr class="challenge-row"><td>${def.name}</td><td>${costStr}</td><td><input type="number" min="0" value="${target}" onchange="window.updateChallengeTarget('${challengeId}',this.value)"></td><td><input type="number" min="0" value="${done}" onchange="window.updateChallengeDone('${challengeId}',this.value)" max="${target}"></td>`;
-
-      usedRes.forEach(function (r) {
-        const remainingOutput = target - done;
-        const batchesNeeded = Math.ceil(remainingOutput / (def.yield || 1));
-        const demand = (def.cost[r.id] || 0) * batchesNeeded;
-        html += `<td class="text-right">${demand}</td>`;
-      });
-      html += `<td><button class="remove" onclick="window.removeChallenge('${challengeId}')">×</button></td></tr>`;
-    });
-    html += "</tbody></table>";
+    html += `<td><button class="remove" onclick="window.removeChallenge('${challengeId}')">×</button></td></tr>`;
+  });
+  html += "</tbody></table>";
+  
   }
 
   // Totals Table
@@ -99,7 +101,7 @@ function render() {
         });
         if (!def || !state.challenges[chId]) return;
         const ch = state.challenges[chId];
-        const remainingOutput = ch.target - ch.done;
+        const remainingOutput = ch.target - (ch.doneCount || 0);
         const batchesNeeded = Math.ceil(remainingOutput / (def.yield || 1));
         totalNeeded += batchesNeeded * (def.cost?.[r.id] || 0);
       });

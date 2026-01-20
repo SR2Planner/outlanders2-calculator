@@ -35,7 +35,7 @@ window.removeBuilding = (bId) => {
 
 window.addChallengeResource = (rId, targetQty = 1) => {
   if (!state.challenges) state.challenges = {};
-  state.challenges[rId] = { target: parseInt(targetQty) || 1, done: 0 };
+  state.challenges[rId] = { target: parseInt(targetQty) || 1, doneCount: 0, donePercent: 0 };
   saveState();
   render();
   document.getElementById("add-resource-dialog").close();
@@ -49,6 +49,31 @@ window.updateChallengeTarget = (rId, val) => {
     render();
   }
 };
+
+window.updateChallengeDoneCount = (challengeId, val) => {
+    if (state.challenges?.[challengeId]) {
+      const target = state.challenges[challengeId].target || 0;
+      state.challenges[challengeId].doneCount = Math.min(parseInt(val) || 0, target);
+      // Auto-update percent
+      const percent = target > 0 ? Math.round((state.challenges[challengeId].doneCount / target) * 100) : 0;
+      state.challenges[challengeId].donePercent = percent;
+      saveState();
+      render();
+    }
+  };
+  
+  window.updateChallengeDonePercent = (challengeId, val) => {
+    if (state.challenges?.[challengeId]) {
+      const target = state.challenges[challengeId].target || 0;
+      const percent = Math.min(Math.max(parseInt(val) || 0, 0), 100);
+      state.challenges[challengeId].donePercent = percent;
+      // Auto-update count
+      state.challenges[challengeId].doneCount = Math.round((percent / 100) * target);
+      saveState();
+      render();
+    }
+  };
+  
 
 window.updateChallengeDone = (rId, val) => {
   if (state.challenges?.[rId]) {
