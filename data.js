@@ -65,7 +65,7 @@ const BUILDINGS = [
   { id: "cookie", name: "Cookie Shop", category: "food", cost: { planks: 3, bricks: 8 } },
   { id: "greenhouse", name: "Green House", category: "food", cost: { glass: 6, stone: 6 } },
   { id: "cheesery", name: "Cheesery", category: "food", cost: { logs: 10, bricks: 8 } },
-  { id: "fondue", name: "Fondue Bar", category: "food", cost: { logs: 10, bricks: 8 } },
+  { id: "fondue", name: "Fondue Bar", category: "food", cost: { planks: 10, bricks: 8 } },
   { id: "driedmeat", name: "Dried Meat Shop", category: "food", cost: { logs: 10 } },
   { id: "dock", name: "Fishing Dock", category: "food", cost: { planks: 18 } },
   { id: "nopaleroHut", name: "Nopalero's Hut", category: "food", cost: { logs: 5 } },
