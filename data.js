@@ -26,9 +26,15 @@ const RESOURCES = [
   // Ingredients
   { id: "flour", name: "Flour", category: "ingredients", cost: { wheat: 1 }, yield: 1 },
 
+    // Production Resources
+    { id: "paper", name: "Paper", category: "production", cost: { logs: 1 }, yield: 1 },
+
+
   // Lifestyle
   { id: "boots", name: "Boots", category: "lifestyle", cost: { leather: 2, logs: 1 }, yield: 1 },
   { id: "coat", name: "Coat", category: "lifestyle", cost: { leather: 3 }, yield: 1 },
+  { id: "newspaper", name: "Newspaper", category: "lifestyle", cost: { paper: 2 }, yield: 6 },
+
 ];
 
 // Categories
