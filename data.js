@@ -22,19 +22,19 @@ const RESOURCES = [
 
   // Food
   { id: "bread", name: "Bread", category: "food", cost: { flour: 1, sticks: 1 }, yield: 8 },
+  { id: "meat", name: "Meat", category: "food", cost: {}, yield: 1 },
+  { id: "driedMeat", name: "Dried Meat", category: "food", cost: { meat: 1 }, yield: 2 },
 
   // Ingredients
   { id: "flour", name: "Flour", category: "ingredients", cost: { wheat: 1 }, yield: 1 },
 
-    // Production Resources
-    { id: "paper", name: "Paper", category: "production", cost: { logs: 1 }, yield: 1 },
-
+  // Production Resources
+  { id: "paper", name: "Paper", category: "production", cost: { logs: 1 }, yield: 1 },
 
   // Lifestyle
   { id: "boots", name: "Boots", category: "lifestyle", cost: { leather: 2, logs: 1 }, yield: 1 },
   { id: "coat", name: "Coat", category: "lifestyle", cost: { leather: 3 }, yield: 1 },
   { id: "newspaper", name: "Newspaper", category: "lifestyle", cost: { paper: 2 }, yield: 6 },
-
 ];
 
 // Categories
