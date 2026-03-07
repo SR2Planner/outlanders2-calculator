@@ -110,7 +110,7 @@ window.addBuildingToPlan = function (bId) {
         // ONLY producibles (yield exists)
         console.log("Auto challenge for", reqId); // DEBUG
         if (!state.challenges[reqId]) {
-          state.challenges[reqId] = { target: 0, done: 0 };
+          state.challenges[reqId] = { target: 0, doneCount: 0, donePercent: 0 };
         }
         state.challenges[reqId].target = Math.max(state.challenges[reqId].target, reqQty);
         console.log("Set challenge", reqId, "target:", state.challenges[reqId].target);

@@ -18,7 +18,7 @@ function getUsedResources() {
   // Challenges: upstream inputs ONLY (exclude target rId)
   Object.keys(state.challenges || {}).forEach((rId) => {
     const def = RESOURCES.find((r) => r.id === rId);
-    if (def) Object.keys(def.cost).forEach((upId) => used.add(upId));
+    if (def && def.cost) Object.keys(def.cost).forEach((upId) => used.add(upId));
     // NO: used.add(rId);  // Exclude net target from columns
   });
   return Array.from(used)
