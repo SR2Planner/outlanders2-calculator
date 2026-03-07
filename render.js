@@ -8,7 +8,7 @@ function render() {
   if (Object.keys(state.plan).length === 0) {
     html += "<p>No buildings planned.</p>";
   } else {
-    html += "<table><thead><tr><th>Building</th><th>Cost for 1</th><th>Planned</th><th>Built</th>";
+    html += '<div class="table-wrapper"><table><thead><tr><th>Building</th><th>Cost for 1</th><th>Planned</th><th>Built</th>';
     usedRes.forEach(function (r) {
       html += `<th>${r.name}</th>`;
     });
@@ -32,7 +32,7 @@ function render() {
       });
       html += `<td><button class="remove" onclick="window.removeBuilding('${buildingId}')">×</button></td></tr>`;
     });
-    html += "</tbody></table>";
+    html += "</tbody></table></div>";
   }
 
   // Challenge Resources Table
@@ -41,7 +41,7 @@ function render() {
     html += "<p>No challenges planned.</p>";
   } else {
     html +=
-    "<table><thead><tr><th>Resource</th><th>Cost per Batch</th><th>Target</th><th>Done Count</th><th>Done Percent</th>";
+    '<div class="table-wrapper"><table><thead><tr><th>Resource</th><th>Cost per Batch</th><th>Target</th><th>Done Count</th><th>Done Percent</th>';
   usedRes.forEach(function (r) {
     html += `<th>${r.name}</th>`;
   });
@@ -63,19 +63,19 @@ function render() {
     usedRes.forEach(function (r) {
       const remainingOutput = target - doneCount;  // Use doneCount
       const batchesNeeded = Math.ceil(remainingOutput / (def.yield || 1));
-      const demand = (def.cost[r.id] || 0) * batchesNeeded;
+      const demand = (def.cost && def.cost[r.id] ? def.cost[r.id] : 0) * batchesNeeded;
       html += `<td class="text-right">${demand}</td>`;
     });
     html += `<td><button class="remove" onclick="window.removeChallenge('${challengeId}')">×</button></td></tr>`;
   });
-  html += "</tbody></table>";
+  html += "</tbody></table></div>";
   
   }
 
   // Totals Table
   if (usedRes.length > 0) {
     html +=
-      '<h3>Totals</h3><table class="totals-table"><thead><tr><th>Resource</th><th>Total Needed</th><th>Provided by Level</th><th>You Have</th><th>Built Credit</th><th>Remaining needed</th></tr></thead><tbody>';
+      '<h3>Totals</h3><div class="table-wrapper"><table class="totals-table"><thead><tr><th>Resource</th><th>Total Needed</th><th>Provided by Level</th><th>You Have</th><th>Built Credit</th><th>Remaining needed</th></tr></thead><tbody>';
     usedRes.forEach(function (r) {
       let totalNeeded = 0,
         builtCredit = 0;
@@ -104,13 +104,19 @@ Object.keys(state.challenges || {}).forEach(function (chId) {
     const doneCount = ch.doneCount || 0;
     const target = ch.target;
     
-    // Always add FULL target demand to totalNeeded (fixed requirement)
-    const fullBatchesNeeded = Math.ceil(target / (def.yield || 1));
-    totalNeeded += fullBatchesNeeded * (def.cost?.[r.id] || 0);
-    
-    // Produced batches add to builtCredit
-    const producedBatches = Math.floor(doneCount / (def.yield || 1));
-    builtCredit += producedBatches * (def.cost?.[r.id] || 0);
+    if (def.cost && Object.keys(def.cost).length > 0) {
+      // Composite resource - calculate input costs needed
+      const fullBatchesNeeded = Math.ceil(target / (def.yield || 1));
+      totalNeeded += fullBatchesNeeded * (def.cost?.[r.id] || 0);
+      
+      // Produced batches add to builtCredit
+      const producedBatches = Math.floor(doneCount / (def.yield || 1));
+      builtCredit += producedBatches * (def.cost?.[r.id] || 0);
+    } else if (r.id === chId) {
+      // Base resource - add target directly to totals for this resource
+      totalNeeded += target;
+      builtCredit += doneCount;
+    }
   });
   
 
@@ -120,7 +126,7 @@ Object.keys(state.challenges || {}).forEach(function (chId) {
       const cls = remaining <= 0 ? "positive" : "negative";
       html += `<tr><td>${r.name}</td><td class="text-right">${totalNeeded}</td><td><input type="number" min="0" value="${provided}" onchange="window.updateProvided('${r.id}',this.value)"></td><td><input type="number" min="0" value="${youHave}" onchange="window.updateResource('${r.id}',this.value)"></td><td class="text-right">${builtCredit}</td><td class="text-right ${cls}">${remaining}</td></tr>`;
     });
-    html += "</tbody></table>";
+    html += "</tbody></table></div>";
   }
 
   container.innerHTML = html;

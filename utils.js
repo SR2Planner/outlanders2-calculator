@@ -15,11 +15,16 @@ function getUsedResources() {
     const b = BUILDINGS.find((bb) => bb.id === bId);
     if (b) Object.keys(b.cost).forEach((rId) => used.add(rId));
   });
-  // Challenges: upstream inputs ONLY (exclude target rId)
+  // Challenges: handle base resources vs composite resources differently
   Object.keys(state.challenges || {}).forEach((rId) => {
     const def = RESOURCES.find((r) => r.id === rId);
-    if (def && def.cost) Object.keys(def.cost).forEach((upId) => used.add(upId));
-    // NO: used.add(rId);  // Exclude net target from columns
+    if (def && def.cost && Object.keys(def.cost).length > 0) {
+      // Composite resource with production costs - add input resources to totals
+      Object.keys(def.cost).forEach((upId) => used.add(upId));
+    } else {
+      // Base resource (no cost) - add the resource itself to totals
+      used.add(rId);
+    }
   });
   return Array.from(used)
     .map(

@@ -66,9 +66,10 @@ input {
   background: var(--input-bg);
   color: var(--fg);
   border: 1px solid var(--border);
-  padding: 4px;
+  padding: 8px;
   border-radius: 4px;
   width: 60px;
+  font-size: 16px; /* Prevents zoom on iOS */
 }
 .remove {
   background: #e74c3c;
@@ -93,24 +94,24 @@ dialog {
   border-radius: 8px;
   padding: 20px;
   max-width: 400px;
+  background: var(--bg);
+  color: var(--fg);
 }
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
 dialog input {
   width: 100%;
   margin-bottom: 10px;
+  box-sizing: border-box;
 }
 #building-list button {
   display: block;
   width: 100%;
   margin-bottom: 5px;
   text-align: left;
-}
-@media (max-width: 768px) {
-  .container {
-    padding: 10px;
-  }
-  table {
-    font-size: 0.9em;
-  }
 }
 
 #resource-list button {
@@ -119,12 +120,151 @@ dialog input {
   margin-bottom: 5px;
   text-align: left;
 }
+
+/* Improve mobile scrolling performance */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Add touch-friendly spacing */
+button, input {
+  margin: 2px;
+}
+
+/* Prevent text selection on interactive elements */
+button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Mobile-first responsive design */
 @media (max-width: 768px) {
-  .container {
+  body {
     padding: 10px;
   }
+  
+  .container {
+    padding: 0;
+  }
+  
+  /* Make tables horizontally scrollable on mobile */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+  }
+  
   table {
-    font-size: 0.9em;
+    font-size: 0.85em;
+    min-width: 600px; /* Ensure table doesn't get too cramped */
+  }
+  
+  th, td {
+    padding: 6px 4px;
+    white-space: nowrap;
+  }
+  
+  /* Stack controls vertically on small screens */
+  .controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* Make input fields more touch-friendly */
+  input {
+    width: 50px;
+    padding: 10px 8px;
+    font-size: 16px;
+  }
+  
+  /* Larger remove buttons for better touch targets */
+  .remove {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  /* Better button sizing */
+  button {
+    padding: 12px 16px;
+    font-size: 16px;
+    min-height: 44px; /* iOS recommended touch target size */
+  }
+  
+  /* Mobile dialog optimizations */
+  dialog {
+    max-width: calc(100vw - 32px);
+    width: 90%;
+    max-height: calc(100vh - 64px);
+    padding: 16px;
+    margin: auto;
+  }
+  
+  dialog input {
+    padding: 12px;
+    font-size: 16px;
+  }
+  
+  #building-list button,
+  #resource-list button {
+    padding: 12px;
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  #building-list,
+  #resource-list {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5em;
+    margin-bottom: 16px;
+  }
+  
+  table {
+    font-size: 0.8em;
+    min-width: 500px;
+  }
+  
+  th, td {
+    padding: 4px 2px;
+  }
+  
+  input {
+    width: 40px;
+    padding: 8px 6px;
+  }
+  
+  .remove {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  
+  button {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+  
+  /* Very small screens - make dialogs full screen */
+  dialog {
+    max-width: 100vw;
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  #building-list,
+  #resource-list {
+    max-height: 70vh;
   }
 }
 
